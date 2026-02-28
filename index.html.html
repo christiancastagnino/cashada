@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CasHada</title>
+<style>
+  body{font-family:Arial,sans-serif;text-align:center;background:#111;color:#fff;padding:24px}
+  h1{margin:0}
+  .subtitle{font-size:18px;margin-bottom:5px}
+  .title-big{font-size:40px;font-weight:bold;margin-bottom:25px}
+  .row{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+  .btn{padding:14px 20px;border:none;border-radius:12px;font-size:18px;cursor:pointer;color:#fff}
+  .verde{background:#6BBF59}
+  .amarillo{background:#F2C94C;color:#111}
+  .rojo{background:#EB5757}
+  .violeta{background:#9B51E0}
+  .card{max-width:720px;margin:22px auto 0;background:#1b1b1b;border:1px solid #2b2b2b;border-radius:16px;padding:18px}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;margin-bottom:10px}
+  .tag.verde{background:#243a24}
+  .tag.amarillo{background:#3b3318}
+  .tag.rojo{background:#3b1b1b}
+  .tag.violeta{background:#2a1b3b}
+  #texto{font-size:22px;line-height:1.25;white-space:pre-line}
+  img{margin-top:16px;max-width:100%;border-radius:12px;border:1px solid #333;display:none}
+  .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .smallbtn{padding:10px 14px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="subtitle">🧚‍♀️ Entre todas las hadas decidí ser la...</div>
+<div class="title-big">✨🌟 …CasHada 🧚‍♀️✨</div>
+
+<div class="row">
+  <button class="btn verde" onclick="draw('verde')">🟢 VERDE</button>
+  <button class="btn amarillo" onclick="draw('amarillo')">🟡 AMARILLA</button>
+  <button class="btn rojo" onclick="draw('rojo')">🔴 ROJA</button>
+  <button class="btn violeta" onclick="draw('violeta')">🟣 VIOLETA</button>
+</div>
+
+<div class="card" id="card" style="display:none;">
+  <div class="tag" id="tag"></div>
+  <div id="texto"></div>
+  <img id="meme" alt="meme" />
+  <div class="actions">
+    <button class="smallbtn" id="btnOtra" onclick="draw(lastColor)">Otra carta</button>
+    <button class="smallbtn" onclick="resetDecks()">Resetear mazos</button>
+  </div>
+</div>
+
+<script>
+
+const DECKS = {
+
+verde: [
+{ text: "Contá la peor cita que hayas tenido.", meme: null },
+{ text: "¿Quién del grupo creés hace más el amor?", meme: "https://media.losandes.com.ar/p/e0e8f812fc1e282d8d910ca5a24debb9/adjuntos/368/imagenes/100/115/0100115213/1000x0/smart/osvaldo-laport-hablo-la-escena-que-dio-origen-su-meme.jpg" },
+{ text: "Imitá como te levantarías un pibe/ tu novio.\n(se sobre entiende que a tu novio no te lo levantas sino que queres que te haga el frutifantastico 😏).", meme: null },
+{ text: "Elegí a alguien del grupo y hablale como un viejo degenerado.\n(Si no generaste clima incómodo, perdiste (el turno), tomás el doble).", meme: null },
+{ text: "Imitá tu voz cuando estás enojada.", meme: null },
+{ text: "¿Quién del grupo sobreviviría en la selva?", meme: "https://pbs.twimg.com/media/F0X4FtlWYAwUXY3.jpg"},
+{ text: "¿Cuál fue tu peor mentira piadosa?", meme: null },
+{ text: "Si fueras un meme, ¿cuál serías?", meme: "https://imagenes.elpais.com/resizer/v2/3XLTWDI6QNOQBDZEOX4ZQQ67VI.jpg?auth=fb79e894ad6c3437584a9762d196fa379a9a986810dab87d83fbac72291a080e&width=1960&height=1470&smart=true"},
+{ text: "Contá una situación vergonzosa.", meme: null },
+{ text: "¿Qué superstición absurda tenés?", meme: null },
+{ text: "Defendé algo ridículo como si fuera serio.", meme: "https://i.pinimg.com/736x/45/2e/dd/452edd42c98bf4daa0e89ba57c205922.jpg" }
+],
+
+amarillo: [
+{ text: "¿Qué te la seca más en un hombre?\n(Ej: mal aliento, deja embarrado el inodoro).", meme: "https://images7.memedroid.com/images/UPLOADED840/65e8ad6e407a1.jpeg" },
+{ text: "Casillero sorpresa:\nTira el dado, si sale un numero par, tomas lo que dice el dado, si sale impar, lo repartis.", meme: null },
+{ text: "¿Celosa o relajada? Entre todas eligen a la mas celosa del grupo y la mas relajada. (OOOOPAAA en este casillero no hay ningúna prenda. Si buscas algo mas picante segui de largo).", meme: null },
+{ text: "¿Qué preferís?\n• Ver a tu pareja con un hombre\n• Ver a tu pareja con una mujer", meme: null },
+{ text: "¿Qué es más importante: química o estabilidad?", meme: null },
+{ text: "¿Perdonarías una infidelidad?", meme: null },
+{ text: "¿Qué red flag ignoraste alguna vez?", meme: "https://i.pinimg.com/736x/fb/6c/09/fb6c09466d46ea699dcfdc605644effc.jpg" },
+{ text: "¿Cuál es tu lenguaje del amor?", meme: null },
+{ text: "¿Qué es lo más romántico que hiciste?", meme: null },
+{ text: "¿Qué cosa mínima te derrite de amor?", meme: "https://i.pinimg.com/474x/b6/a8/f0/b6a8f09b9a573214da7b7a19fa0b8fb5.jpg" }
+],
+
+rojo: [
+{ text: "Elegi el objeto con forma fálica mas cercano a vos y frotalo suavemente sobre tu cara por la próxima ronda.\n(Y por zorrita tomá dos shots 😈).", meme: "https://i.pinimg.com/1200x/16/fc/a7/16fca79e08fb5896fe9bc8f8bccad959.jpg" },
+{ text: "¿Qué es lo que mas te calienta del matzo?\n(Si no respondes en  8 segundos, fumas una sequita y te das una vueltita (si no fumas, toma dos shots- Sin vuelta!!!).", meme: "https://i.pinimg.com/736x/15/d3/92/15d392e3c40abf24d4ce856a3502ebae.jpg" },
+{ text: "Elegí a alguien y gemile suavemente en el oído.", meme: null },
+{ text: "Contá un momento que te mantenga humilde.", meme: "https://cdn.memegenerator.es/imagenes/memes/full/33/17/33171876.jpg" }
+],
+
+violeta: [
+{ text: "Todas votan quién es la más intensa.\n (En el amor, obveoooo. No se peleen!)", meme: "https://tn.com.ar/resizer/v2/mauro-viale-y-alberto-samid-en-su-recordada-pelea-al-aire-EAQG7NYNAFEZRNYAZKIULRLWWQ.jpg?auth=53836c43f5954ca21608d0dcb686db399638627db53c474a6c91420629df6909&width=1440" },
+{ text: "La persona a tu derecha decide si tomás o haces un baile sensual durante 1 minuto.", meme: "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84925497c4ac1c2456acba15a4" },
+{ text: "Sin permiso ni perdón. Solamente lo ves vos.\n (Elegí a alguien robale el trago sin pedirle permiso ni perdon)", meme: null },
+{ text: "Hagan un brindis por el peor ex del grupo.", meme: null },
+{ text: "No podés usar la palabra 'Y' por dos rondas.", meme: "https://cloudfront-us-east-1.images.arcpublishing.com/artear/WLNOBA3MLVF6NLQUKAM7WV7DGM.jpg" },
+{ text: "Durante una ronda hablás con acento español.", meme: null },
+{ text: "No podés decir 'yo' por una ronda.", meme: null },
+{ text: "Hacé contacto visual con alguien hasta que se ría.", meme: "https://media.tenor.com/JCYLRqm7oyIAAAAM/trying-not-to-laugh-zoom-in.gif" },
+{ text: "Elegí a alguien y decile algo que parezca un halago pero no lo sea.", meme: null },
+{ text: "Todos brindan por la persona más dramática.", meme: "https://i.pinimg.com/564x/d5/82/33/d5823373f749f4973bbac393b314b0de.jpg" },
+{ text: "Intercambiá tu pitoficha con alguien.", meme: null }
+]
+
+};
+
+let shuffled = { verde: [], amarillo: [], rojo: [], violeta: [] };
+let lastColor = "verde";
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function refill(color){ shuffled[color] = shuffleArray(DECKS[color]); }
+function resetDecks(){ for (const c in DECKS) refill(c); alert("Mazos mezclados ✨"); }
+resetDecks();
+
+function draw(color){
+  lastColor = color;
+  if(shuffled[color].length === 0) refill(color);
+  const card = shuffled[color].pop();
+  document.getElementById("card").style.display = "block";
+  document.getElementById("tag").className = "tag " + color;
+  document.getElementById("tag").textContent = color.toUpperCase();
+  document.getElementById("texto").textContent = card.text;
+  const img = document.getElementById("meme");
+  if(card.meme){ img.src = card.meme; img.style.display = "block"; }
+  else{ img.style.display = "none"; img.src = ""; }
+  document.getElementById("btnOtra").style.display = "inline-block";
+}
+
+</script>
+</body>
+</html>
